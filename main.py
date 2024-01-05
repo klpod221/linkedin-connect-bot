@@ -72,9 +72,14 @@ if not keyword:
 
 # check os and machine
 path = "./drivers/"
+
+options = webdriver.ChromeOptions()
+options.add_argument("--start-maximized")
+
 if platform.system() == "Windows":
     if os.path.exists(path + "chromedriver.exe"):
         path += "chromedriver.exe"
+        options.binary_location = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
     else:
         print("chromedriver.exe not found!")
         exit()
@@ -105,8 +110,6 @@ else:
     exit()
 
 s = Service(path)
-options = webdriver.ChromeOptions()
-options.add_argument("--start-maximized")
 driver = webdriver.Chrome(service=s, options=options)
 
 
