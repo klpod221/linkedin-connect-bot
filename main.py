@@ -54,16 +54,13 @@ print("----------------------------------\n")
 print_red("Note: Please read the following instructions carefully!")
 print_red("1. Keyword is required! (e.g: Software Engineer)")
 print_red(
-    "2. Location keyword is optional!, if you don't want to add location, just press Enter"
+    "2. Location is optional!, if you don't want to add location, just press Enter"
 )
-print_red(
-    "3. If you want to enter multiple location keywords, please separate them by comma (,) and no space (e.g: Ho Chi Minh City,Singapore)"
-)
-print_red("4. If you want to stop the program, just press Ctrl + C\n")
+print_red("3. If you want to stop the program, just press Ctrl + C\n")
 print("----------------------------------\n")
 
 keyword = input("Enter keyword (required): ")
-location_keyword = input("Enter location: ")
+location_keyword = input("Enter location (optional; 1 for Ha Noi; 2 for Ho Chi Minh; 1,2 for both): ")
 
 # check keyword and location keyword
 if not keyword:
@@ -176,52 +173,21 @@ if current_url.find("checkpoint") != -1:
 
 print_green("Login successfully!")
 
-# find contact
-keyword_parse = keyword.replace(" ", "%20")
-driver.get(
-    "https://www.linkedin.com/search/results/people/?keywords="
-    + keyword_parse
-    + "&origin=SWITCH_SEARCH_VERTICAL"
-)
+hanoiGeoID = "105790653"
+hcmGeoID = "103697962"
 
-time.sleep(2)
+search_url = "https://www.linkedin.com/search/results/people/"
 
-# click to All Filters (aria-label="Show all filters. Clicking this button displays all available filter options.")
-driver.find_element(
-    By.XPATH,
-    '//button[@aria-label="Show all filters. Clicking this button displays all available filter options."]',
-).click()
-time.sleep(1)
+if location_keyword == "1":
+    search_url += "?geoUrn=%5B" + hanoiGeoID + "%5D"
+elif location_keyword == "2":
+    search_url += "?geoUrn=%5B" + hcmGeoID + "%5D"
+elif location_keyword == "1,2":
+    search_url += "?geoUrn=%5B" + hanoiGeoID + "%2C" + hcmGeoID + "%5D"
 
-# find checkbox
-driver.find_element(By.XPATH, '//label[@for="advanced-filter-network-S"]').click()
-driver.find_element(By.XPATH, '//label[@for="advanced-filter-network-O"]').click()
+search_url += "&keywords=" + keyword.replace(" ", "%20")
 
-# add location
-# check location_keyword, if exists, add location
-if location_keyword != "" and location_keyword != None:
-    # split location_keyword by comma
-    locations = location_keyword.split(",")
-
-    # loop through locations
-    for location in locations:
-        driver.find_element(By.XPATH, '//button[span[text()="Add a location"]]').click()
-        location_input = driver.find_element(
-            By.XPATH, '//input[@placeholder="Add a location"]'
-        )
-        location_input.send_keys(location)
-
-        location_input.send_keys("\ue015")
-        time.sleep(1)
-        location_input.send_keys("\ue015")
-        time.sleep(1)
-        location_input.send_keys("\ue007")
-        time.sleep(1)
-
-# click Show results
-driver.find_element(
-    By.XPATH, '//button[@aria-label="Apply current filters to show results"]'
-).click()
+driver.get(search_url)
 
 time.sleep(2)
 
