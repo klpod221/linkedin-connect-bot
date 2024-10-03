@@ -142,13 +142,13 @@ def send_connection_request_with_note(name):
         + "\n. Nice to connect!"
     )
     # click Send now
-    driver.find_element(By.XPATH, '//button[@aria-label="Send now"]').click()
+    driver.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
 
 
 # function to send connection request without note
 def send_connection_request_without_note():
     # click Send now
-    driver.find_element(By.XPATH, '//button[@aria-label="Send now"]').click()
+    driver.find_element(By.XPATH, '//button[@aria-label="Send without a note"]').click()
 
 
 # go to linkedin
