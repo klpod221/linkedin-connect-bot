@@ -52,15 +52,18 @@ print_green("Welcome to LinkedIn Auto Connect!")
 print_yellow("Created by: klpod2211")
 print("----------------------------------\n")
 print_red("Note: Please read the following instructions carefully!")
-print_red("1. Keyword is required! (e.g: Software Engineer)")
-print_red(
+print("1. Keyword is required! (e.g: Software Engineer)")
+print(
     "2. Location is optional!, if you don't want to add location, just press Enter"
 )
-print_red("3. If you want to stop the program, just press Ctrl + C\n")
+print(
+    "3. 1 for Ha Noi, 2 for Ho Chi Minh, 3 for both, enter your GeoUrn Code (105790653,103697962) for other locations"
+)
+print("4. If you want to stop the program, just press Ctrl + C\n")
 print("----------------------------------\n")
 
 keyword = input("Enter keyword (required): ")
-location_keyword = input("Enter location (optional; 1 for Ha Noi; 2 for Ho Chi Minh; 1,2 for both): ")
+location_keyword = input("Enter location (optional): ")
 
 # check keyword and location keyword
 if not keyword:
@@ -179,13 +182,32 @@ hcmGeoID = "103697962"
 search_url = "https://www.linkedin.com/search/results/people/"
 
 if location_keyword == "1":
-    search_url += "?geoUrn=%5B" + hanoiGeoID + "%5D"
+    search_url += "?geoUrn=['" + hanoiGeoID + "']"
 elif location_keyword == "2":
-    search_url += "?geoUrn=%5B" + hcmGeoID + "%5D"
-elif location_keyword == "1,2":
-    search_url += "?geoUrn=%5B" + hanoiGeoID + "%2C" + hcmGeoID + "%5D"
-
-search_url += "&keywords=" + keyword.replace(" ", "%20")
+    search_url += "?geoUrn=['" + hcmGeoID + "']"
+elif location_keyword == "3":
+    search_url += "?geoUrn=['" + hanoiGeoID + "','" + hcmGeoID + "']"
+elif location_keyword:
+    geoUrn = location_keyword.split(",")
+    search_url += "?geoUrn=['"
+    for i in range(len(geoUrn)):
+        search_url += geoUrn[i]
+        if i != len(geoUrn) - 1:
+            search_url += "','"
+    search_url += "']"
+    
+if keyword:
+    search_url += "&keywords=" + keyword
+    
+# parse search url
+search_url = search_url.replace(" ", "%20")
+search_url = search_url.replace(",", "%2C")
+search_url = search_url.replace("[", "%5B")
+search_url = search_url.replace("]", "%5D")
+search_url = search_url.replace("'", "\"")
+    
+print_green("Searching for " + keyword + " in " + location_keyword + "...")
+print_green("Search URL: " + search_url)
 
 driver.get(search_url)
 
